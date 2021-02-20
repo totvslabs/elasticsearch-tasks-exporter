@@ -1,0 +1,24 @@
+before:
+  hooks:
+    - go mod download
+builds:
+- goos:
+  - linux
+  goarch:
+  - amd64
+  env:
+  - CGO_ENABLED=0
+changelog:
+  sort: asc
+  filters:
+    exclude:
+    - '^docs:'
+    - '^test:'
+dockers:
+- image_templates:
+  - "totvslabs/elasticsearch-tasks-exporter:latest"
+  - "totvslabs/elasticsearch-tasks-exporter:{{ .Tag }}"
+  build_flag_templates:
+  - "--label=org.label-schema.schema-version=1.0"
+  - "--label=org.label-schema.version={{ .Version }}"
+  - "--label=org.label-schema.name={{ .ProjectName }}"
