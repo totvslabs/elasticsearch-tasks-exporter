@@ -34,8 +34,8 @@ func NewCollector(client client.Client) prometheus.Collector {
 			nil,
 		),
 		total: prometheus.NewDesc(
-			prometheus.BuildFQName(namespace, subsystem, "total"),
-			"Total pending tasks by source and priority",
+			prometheus.BuildFQName(namespace, subsystem, "count"),
+			"Pending tasks by source and priority",
 			[]string{"source", "priority"},
 			nil,
 		),
@@ -86,7 +86,7 @@ func (c *collector) Collect(ch chan<- prometheus.Metric) {
 	}
 
 	for _, tasks := range groupedTasks {
-		ch <- prometheus.MustNewConstMetric(c.total, prometheus.CounterValue, float64(len(tasks)), strings.ToLower(tasks[0].Source), strings.ToLower(tasks[0].Priority))
+		ch <- prometheus.MustNewConstMetric(c.total, prometheus.GaugeValue, float64(len(tasks)), strings.ToLower(tasks[0].Source), strings.ToLower(tasks[0].Priority))
 	}
 
 	ch <- prometheus.MustNewConstMetric(c.up, prometheus.GaugeValue, 1)
